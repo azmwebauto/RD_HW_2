@@ -1,4 +1,3 @@
-import multiprocessing as mp
 import asyncio
 
 
@@ -16,20 +15,16 @@ class Client(asyncio.Protocol):
 
 
 async def main():
-    current_process = mp.current_process()
-    print(f'{current_process=}')
     loop = asyncio.get_running_loop()
     future = loop.create_future()
 
-    transport, protocol = await loop.create_connection(
-        lambda: Client(),
-        '127.0.0.1', 8000
-    )
+    transport, protocol = await loop.create_connection(Client, '127.0.0.1', 8000)
 
     try:
         await future
     except Exception:
         transport.abort()
+
 
 if __name__ == '__main__':
     asyncio.run(main())
